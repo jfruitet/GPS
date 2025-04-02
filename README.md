@@ -18,25 +18,25 @@ Nous allons privilégier le protocole UBX qui est plus compact et évite de pars
 
 ## Configuration et lecture des messages des module GPS U-Blox
 
-Les sources ci-après sont reprises in extenso des vidéos Youtube publiées en 2015 par @iforce2d
- https://www.youtube.com/watch?v=TwhCX0c8Xe0
- https://www.youtube.com/watch?v=ylxwOg2pXrc
+Les sources ci-après sont reprises in extenso des vidéos Youtube publiées en 2015 par [@iforce2d]([iforce2d - YouTube](https://www.youtube.com/@iforce2d))
+
+
+  https://www.youtube.com/watch?v=TwhCX0c8Xe0
+
+  https://www.youtube.com/watch?v=ylxwOg2pXrc
+
+
 
 On trouvera nombre de croquis utiles sur la page de @iforce2d
- https://www.iforce2d.net/sketches/
-
-dont ceux qui ont servi à rédiger ce code.
+ https://www.iforce2d.net/sketches/ dont ceux qui ont servi à rédiger ce code.
 
 Dans le fichier source *UBX_GPS_SetMessageOutputs.ino* on trouve **comment configurer** un module GPS U-Blox M6N, M7N, M8N ( ? M9N, M10 ) connecté aux broches RX et TX d'une carte Arduino.
 
-Dans le fichier source *UBX_GPS.ino* on trouve comment lire les trames  **UBX-NAV-POSLLH** (Geodetic position solution). 
+Dans le fichier source *UBX_GPS.ino* on trouve comment lire les trames  **UBX-NAV-POSLLH** (Geodetic position solution). Ce sont les messages à utiliser pour les modues antérieurs à U-Blox NEO M8N.
 
 Dans le fichier source *UBX_GPS_MultipleMessage.ino* on trouve comment lire  deux messages différents : **UBX-NAV-POSLLH** (Geodetic position solution)  et **UBX-NAV-STATUS** (Receiver navigation status).
 
-Dans le fichier source *UBX_GPS_NAV_PVT.ino* on trouvecomm ent lire les trames   **UBX-NAV-PVT** (Navigation position velocity time solution).
-
-
-
+Dans le fichier source *UBX_GPS_NAV_PVT.ino* on trouve comment lire les messaes  **UBX-NAV-PVT** (Navigation position velocity time solution), particulièrement adaptés à partir des modules U-Blox NEO M8N.
 
 ### U-Blox data type
 
@@ -73,15 +73,13 @@ Documentation constructeur pour les GPS U-Blox Neo M8N
 
 https://content.u-blox.com/sites/default/files/products/documents/u-blox8-M8_ReceiverDescrProtSpec_UBX-13003221.pdf?utm_content=UBX-13003221
 
-On y trouvera la liste des commandes UBX acceptées par cette famille de modules GPS.
+On y trouve la liste des commandes UBX acceptées par cette famille de modules GPS.
 
 A vrai dire les seules commandes qui nous seront utiles portent sur la configuration et la lecture des positions GPS : 
 
 UBX-CFG-PRT (Port configuration for UART ports)  
-UBX-NAV-POSLLH (Geodetic position solution)
-
 UBX-NAV-STATUS (Receiver navigation status)
-
+UBX-NAV-POSLLH (Geodetic position solution)
 UBX-NAV-PVT (Navigation position velocity time solution) à utiliser à partir des module UBX NEO M8N
 
-On peut suivre la méthode proposée par @iforce2d dans ses vidéos pour lire d'autres trames.
+On peut suivre la méthode proposée par [@iforce2d]([iforce2d - YouTube](https://www.youtube.com/@iforce2d)) dans ses vidéos pour lire d'autres trames.

@@ -20,12 +20,9 @@ Nous allons privilégier le protocole UBX qui est plus compact et évite de pars
 
 Les sources ci-après sont reprises in extenso des vidéos Youtube publiées en 2015 par ([iforce2d - YouTube](https://www.youtube.com/@iforce2d))
 
-
   https://www.youtube.com/watch?v=TwhCX0c8Xe0
 
   https://www.youtube.com/watch?v=ylxwOg2pXrc
-
-
 
 On trouvera nombre de croquis utiles sur la page de @iforce2d
  https://www.iforce2d.net/sketches/ dont ceux qui ont servi à rédiger ce code.

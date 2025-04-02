@@ -18,7 +18,7 @@ Nous allons privilégier le protocole UBX qui est plus compact et évite de pars
 
 ## Configuration et lecture des messages des module GPS U-Blox
 
-Les sources ci-après sont reprises in extenso des vidéos Youtube publiées en 2015 par [@iforce2d]([iforce2d - YouTube](https://www.youtube.com/@iforce2d))
+Les sources ci-après sont reprises in extenso des vidéos Youtube publiées en 2015 par ([iforce2d - YouTube](https://www.youtube.com/@iforce2d))
 
 
   https://www.youtube.com/watch?v=TwhCX0c8Xe0
@@ -78,8 +78,8 @@ On y trouve la liste des commandes UBX acceptées par cette famille de modules G
 A vrai dire les seules commandes qui nous seront utiles portent sur la configuration et la lecture des positions GPS : 
 
 UBX-CFG-PRT (Port configuration for UART ports)  
-UBX-NAV-STATUS (Receiver navigation status)
-UBX-NAV-POSLLH (Geodetic position solution)
+UBX-NAV-STATUS (Receiver navigation status)  
+UBX-NAV-POSLLH (Geodetic position solution)  
 UBX-NAV-PVT (Navigation position velocity time solution) à utiliser à partir des module UBX NEO M8N
 
 On peut suivre la méthode proposée par [@iforce2d]([iforce2d - YouTube](https://www.youtube.com/@iforce2d)) dans ses vidéos pour lire d'autres trames.

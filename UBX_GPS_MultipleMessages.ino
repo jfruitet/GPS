@@ -107,6 +107,10 @@ union UBXMessage {
 
 UBXMessage ubxMessage;
 
+// Pour un traitement ultérieur
+long lat;
+long lon;
+
 // The last two bytes of the message is a checksum value, used to confirm that the received payload is valid.
 // The procedure used to calculate this is given as pseudo-code in the uBlox manual.
 void calcChecksum(unsigned char* CK, int msgSize) {
@@ -211,18 +215,20 @@ int processGPS() {
   return MT_NONE;
 }
 
+
 void setup() 
 {
-  Serial.begin(9600);
-  serial.begin(9600);
+  Serial.begin(9600);	// Hardware serial utilisé pour debug et charger le code avec le câble USB
+  serial.begin(9600);	// SoftSerial
 }
 
-long lat;
-long lon;
 
 void loop() {
   int msgType = processGPS();
   if ( msgType == MT_NAV_POSLLH ) {
+	lon = ubxMessage.navPosllh.lon;
+	lat = ubxMessage.navPosllh.lat;
+	
     Serial.print("iTOW:");      Serial.print(ubxMessage.navPosllh.iTOW);
     Serial.print(" lat/lon: "); Serial.print(ubxMessage.navPosllh.lat); Serial.print(","); Serial.print(ubxMessage.navPosllh.lon);
     Serial.print(" hAcc: ");    Serial.print(ubxMessage.navPosllh.hAcc/1000.0f);

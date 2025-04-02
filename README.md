@@ -1,5 +1,7 @@
 # GPS
 
+jean.fruitet@free.fr - Avrile 2025
+
 ## Présentation
 
 Pour configurer un GPS –  vitesse de transfert (baud rates), protocole, fréquence d’acquisition, etc. –  on peut relier le module GPS à port série d'un contrôleur de vol Pixhawk,  connecter celui-ci par câble USB au PC sur lequel on aura installé au préalable  les logiciels **U-Center** de U-Blox et **Mission Planner**.
@@ -79,4 +81,9 @@ UBX-NAV-STATUS (Receiver navigation status)
 UBX-NAV-POSLLH (Geodetic position solution)  
 UBX-NAV-PVT (Navigation position velocity time solution) à utiliser à partir des module UBX NEO M8N
 
-On peut suivre la méthode proposée par [@iforce2d]([iforce2d - YouTube](https://www.youtube.com/@iforce2d)) dans ses vidéos pour lire d'autres trames.
+On peut suivre la méthode proposée par ([iforce2d - YouTube](https://www.youtube.com/@iforce2d)) dans ses vidéos pour lire d'autres trames.
+
+## A faire pour RoBoNav
+
+- Le fichier *robonav_gps_arduino.ino* doit être testé avec une carte Arduino Nano et une carte Arduino Uno R4
+- Le fichier *robonav_gps_esp32.ino* doit être programmé pour une carte ESP32 WROOM WiFi

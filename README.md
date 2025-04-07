@@ -1,6 +1,6 @@
 # GPS
 
-jean.fruitet@free.fr - Avrile 2025
+jean.fruitet@free.fr - Avril 2025
 
 ## Présentation
 

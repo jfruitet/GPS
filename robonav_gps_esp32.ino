@@ -1,11 +1,11 @@
 /* ========================================================================== */
 /*                                                                            */
-/*   robonav_gps.ino                                                          */
+/*   robonav_gps_esp32.ino                                                    */
 /*   (cc) 2025 Author jean.fruitet@free.fr                                    */
 /*   Repris du code source proposé en 2015 par @iforce2d                      */
 /*   Description                                                              */
 /*   Programmation des modules GPS U-Blox                                     */
-/*   UBX_GPS_MultipleMessage.ino                                              */
+/*                                                                            */
 /*   Tous les messages peuvent être vérifiés                                  */
 /*   en utilisant le logiciel U-Centerde U-Blox                               */
 /*   Commentaires en Anglais sur Youtube                                      */
@@ -18,6 +18,7 @@
 /**
  * Configuration d'un module GPS U-Blox M6N, M7N, M8N et M9N
  * Evite de passer par U-Center 2 pour configurer un GPS U-Blox
+ * 
  * @iforce2d says:
  * Making a non-permanent change via the program at run-time means the end-user never needs to fiddle with any message settings, 
  * you can use a brand-new module right out of the box and it will work, and you can switch your GPS modules to any other 
@@ -26,7 +27,7 @@
  * and less error-prone to just copy and paste it in (and much easier when making a video like this to demonstrate 
  * what the hell is going on :).
  * 
- * Ce code initialise le module GPS connecté aux broches 3 et 5 d'une carte Arduino
+ * Ce code initialise le module GPS connecté aux broches 16 et 17 d'une carte ESP32
  * 
  * Dans le fichier source UBX_GPS_SetMessageOutputs.ino on trouvera comment configurer 
  * un module GPS U-Blox M6N, M7N, M8N ( ? et M9N) connecté aux broches GPSRX et GPSTX d'une carte Arduino
@@ -40,22 +41,23 @@
  * Dans le fichier source UBX_GPS_NAV_PVT.ino on trouvera comment lire les trames   
  * UBX-NAV-PVT (Navigation position velocity time solution)
  * 
- * Ce code utilise la bibliothèque <SoftwareSerial.h>
- * https://docs.arduino.cc/learn/built-in-libraries/software-serial/
- * qui permet d'adresser des ports série supplémentaires sur les broches numériques (digital pins) d'une carte Arduino.
+ * Ce code utilise la bibliothèque <HardwareSerial.h> 
+ * https://github.com/espressif/arduino-esp32/blob/master/cores/esp32/HardwareSerial.h
+ * qui permet d'adresser des ports série supplémentaires sur les broches numériques (digital pins) d'une carte ESP32.
  * 
  * ATTENTION : Veillez à éviter les conflits de ports série.
- * Il sera probablement nécessaire de choisir d'autres broches (pins) si vous utilisez
- * aussi une connexion série pour le débugage USB
- * https://stackoverflow.com/questions/75050941/esp32-connected-to-gps-module-no-serial-out-unless-holding-down-reset-button
+ * Il est nécessaire d'affecter des broches différentes (pins) si vous utilisez simultanément
+ * une connexion série pour le débogage USB et pour le GPS
+ * https://stackoverflow.com/questions/75050941/esp32-connected-to-gps-module-no-Serial2-out-unless-holding-down-reset-button
  * 
  * Principe du code
+ *  Initialisation du port série du GPS
  *  Des messages sont envoyés (en écriture) sur le port série du GPS pour 
  *  1) Déconnecter le protocole NMEA et supprimer une série de messages non pertinents
  *  2) Faire un reset des messages UBX utiles
  *  3) Activer les messages UBX utiles
  *  4) Sélectionner un taux d'échantillonage de 10 hz
- *  5) A tester : sauvegarder la configuration de façon permanente
+ *  5) Sauvegarder la configuration de façon permanente
  * 
  * Pour le format des données U-Blox consulter le document 
  * https://docs.google.com/spreadsheets/d/14Fo6mMFCGLDnGiOhI6vzVnZVtHBz8d1JU0cUR86ovSs/edit?gid=0#gid=0
@@ -84,13 +86,16 @@ CH			Char			1		char
 
 *****************************************************************************/
 
-#include <SoftwareSerial.h>
+#include <HardwareSerial.h> // Permet de définir des ports série supplémentaires sur ESP32
+// #include <TinyGPSPlus.h> // Bibliothèque pour parser des trames NMEA ; on ne l'utilise pas ici
 
-// Connect the GPS RX/TX to arduino pins 3 and 5
-#define GPSRX 3
-#define GPSTX 5
+//--- DEVICES I2C & UART(GPS) control Pins repris du fichier RoBoNav/pin_definition.h -----------//
+// #define I2C_SCL 22    // I2C Clock
+// #define I2C_SDA 21    // I2C Data
 
-SoftwareSerial Serial = SoftwareSerial(GPSRX,GPSTX);
+#define GPSTX   16    // Serial UART2 (Attention peut être en inversion)
+#define GPSRX   17    // Serial UART2
+#define GPS_BAUDRATE    9600    // Si on en change modifier la trame lue dans la rubrique 4 - Rate !
 
 const unsigned char UBLOX_INIT[] PROGMEM = {
   // 1 - Disable NMEA
@@ -184,15 +189,25 @@ NAV_PVT pvt;
 long lat;
 long lon;
 
+// -----------------------------------------------------
 void setup()
 {
-  Serial.begin(9600);	// Hardware serial utilisé pour debug et charger le code avec le câble USB
-  serial.begin(9600);	// SoftwareSerial
+    Serial.begin(9600);	// Hardware Serial utilisé pour debug et charger le code avec le câble USB
+    // Port série 2 de la carte ESP32 initialisé avec <HardwareSerial.h>
+    Serial2.begin(GPS_BAUDRATE, SERIAL_8N1, GPSRX, GPSTX);
+    // Serial2.begin(0, SERIAL_8N1, -1, -1, true, 11000UL);  // Passing 0 for baudrate to detect it, the last parameter is a timeout in ms
+  
+    unsigned long detectedBaudRate = Serial2.baudRate();
+    if(detectedBaudRate) {
+       Serial.printf("Detected baudrate is %lu\n", detectedBaudRate);
+    } else {
+       Serial.println("No baudrate detected, Serial2 will not work!");
+    }  
 
-  // send configuration data in UBX protocol
-  for(int i = 0; i < sizeof(UBLOX_INIT); i++) {                        
-    serial.write( pgm_read_byte(UBLOX_INIT+i) );
-    delay(5); 	// Simulating a 38400baud pace (or less), otherwise commands are not accepted by the device.
+    // send configuration data in UBX protocol
+    for(int i = 0; i < sizeof(UBLOX_INIT); i++) {                        
+        Serial2.write( pgm_read_byte(UBLOX_INIT+i) );
+        delay(5); 	// Simulating a 38400baud pace (or less), otherwise commands are not accepted by the device.
 				// Voir la remarque dans les commentaires de la vidéo N°1
 				// @ColinMcCormack
 				// It's worth noting that the device will send back an ACK message (0x05) upon receipt 
@@ -203,11 +218,10 @@ void setup()
 }
 
 
-
+// -----------------------------------------------------
 void loop() {
   if ( processGPS() ) {
-  // Pour un traitement ultérieur
-    // pour un usage ultérieur
+    // Pour un traitement ultérieur
     lon = pvt.lon;
     lat = pvt.lat;
     
@@ -224,7 +238,7 @@ void loop() {
 }
 
 
-
+// --------------------------------------------------------
 void calcChecksum(unsigned char* CK) {
   memset(CK, 0, 2);
   for (int i = 0; i < (int)sizeof(NAV_PVT); i++) {
@@ -233,13 +247,14 @@ void calcChecksum(unsigned char* CK) {
   }
 }
 
+// --------------------------------------------------------
 bool processGPS() {
   static int fpos = 0;
   static unsigned char checksum[2];
   const int payloadSize = sizeof(NAV_PVT);
 
-  while ( serial.available() ) {
-    byte c = serial.read();
+  while ( Serial2.available() ) {
+    byte c = Serial2.read();
     if ( fpos < 2 ) {
       if ( c == UBX_HEADER[fpos] )
         fpos++;

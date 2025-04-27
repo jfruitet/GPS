@@ -2,7 +2,7 @@
 
 Agathe D., Thed K.
 
-Ce rapport présente l'avancement du projet RoBoNav au 24/04/2025
+Le *Rapport ROBONAV - 20250424.pdf* présente notre contribution au projet RoBoNav au 24/04/2025
 
 Les dossiers fournissent les versions de code source pour les différentes étapes de notre projet.
 
@@ -14,7 +14,7 @@ L'algorithme consiste à transmettre au rover les écarts en longitude et latitu
 
 Tester l'apport de GPS RTK, en mode DGNSS et en mode RTK  
 
-![](C:\Users\jf\AppData\Roaming\marktext\images\2025-04-27-16-17-14-image.png)
+![](DGNSS.jpg)
 
 ### Matériels
 

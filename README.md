@@ -1,8 +1,30 @@
-# GPS
+# GPS - RoBoNav
 
-jean.fruitet@free.fr - Avril 2025
+jean.fruitet@free.fr - Avril 2025 Septembre 2025
 
-## Présentation
+Contribution de Agathe DAUDENTHUN <agathe.daudenthun@2026.icam.fr> et Thed KAMGA thed.kamga@2026.icam.fr de l'ICAM de Nantes
+
+Contact : jean.fruitet@free.fr
+
+En 2025 l'équipe de l'ICAM s'est consacrée à l'amélioration du positionnement GPS.
+
+Différents mdèles de GPS ont été utilisés, des GPS d'entrée de gamme UBlox M8N aux GPS Quectel RTK.
+
+Des comparatifs de précision ont été effectués.
+
+Les tests ont confirmé que les GPS d'entrée de gamme avec une précision de l'ordre du mètre ne peuvent convenir pour
+le projet de Bouée autonome avec ancrage par GPS destinée à la VRC (Voile Radio Commandée).
+
+Ce n'est qu'au mois de juillet 2025 que les modules GPS Quectel RTK ont pu être correctement implantés, permettant d'accéder à un coût acceptable à une résolution de l'ordre du centimètre.
+
+L'implantation définitive sera confiée à l'équipe projet 2025 - 2026
+
+* Pour accéder aux travaux concernant les GPS consulter le Github https://github.com/jfruitet/GPS
+
+* Pour accéder au code du projet RoBoNav consulter le Github : https://github.com/jfruitet/RoBoNav
+
+
+## Configuration d'un GPS
 
 Pour configurer un GPS –  vitesse de transfert (baud rates), protocole, fréquence d’acquisition, etc. –on peut relier le module GPS à un port série d'un contrôleur de vol Pixhawk,  connecter celui-ci par câble USB au PC sur lequel on aura installé au préalable  les logiciels **U-Center** de U-Blox et **Mission Planner**.
 
@@ -10,7 +32,7 @@ Une fois la configuration du module effectuée avec U-Center, Mission Planer per
 
 Cette procédure doit être répétée pour chaque module GPS de chaque rover. En cas de changement de module, il faut la reprendre entièrement, ce qui n'est pas du tout plug & play !
 
-Alternativement, et c'est ce que ce code permet, on intègre au code source du firmware chargé sur la carte Arduino (ou ESP32) une séquence de configuration en binaire UBX.  
+Alternativement, et c'est ce que le code proposé ci-après permet, on intègre au code source du firmware chargé sur la carte Arduino (ou ESP32) une séquence de configuration en binaire UBX.  
 
 ### Protocoles de lecture des données GPS
 
@@ -93,4 +115,10 @@ En reprenant le code fourni par @iforce2d j'ai écrit une bibliothèque destiné
 - Le fichier *robonav_gps_arduino.ino* doit être testé avec une carte Arduino Nano et une carte Arduino Uno R4
 - Le fichier *robonav_gps_esp32.ino* doit être testé avec une carte ESP32 WROOM WiFi
 
-A suivre...
+## RTK
+Real Time Kinetic est un protocole permettant d'acquérir des données GPS de haute précision (de l'ordre du cm) 
+La mise en oeuvre et une liste de matériel est disponible sur le site du réseau Centipede https://docs.centipede.fr/
+
+Pour des raisons de coût nous nous sommes trounés vers des module GPS Quectel de haute précision. Mais ce n'est qu'au mois de juillet 2025 que nus avons réussi à accéder à une précision centimétrique.
+
+C'est l'équipe de développement 2025 - 2026 qui prendra en charge l'intégration au projet RoBoNav.
